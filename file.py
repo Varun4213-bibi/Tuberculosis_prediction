@@ -3,10 +3,10 @@ import shutil
 import random
 
 # Source directory with original dataset images
-dataset_path = "C:/Users/varsh/Downloads/archive (5)/TB_Chest_Radiography_Database"
+dataset_path = "add your path to orginal dataset"
 
 # Output directory where organized dataset will be saved
-output_base = "C:/Users/varsh/Downloads/archive (5)/new_database"
+output_base = "add path for organized dataset"
 
 # Define classes
 classes = ['Normal', 'Tuberculosis']
@@ -54,3 +54,4 @@ for c in classes:
     split_and_copy(c)
 
 print(f"Dataset successfully organized at {output_base} with train, val, and test splits.")
+
