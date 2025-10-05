@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TB Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .upload-area {
+            border: 2px dashed #fff;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .upload-area.dragover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .upload-text {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        .result h2 {
+            margin: 0 0 10px 0;
+            font-size: 2em;
+        }
+        .confidence {
+            font-size: 1.2em;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chest X-ray TB Detector</h1>
+        <form action="/predict" method="post" enctype="multipart/form-data" id="upload-form">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-text">Drag & Drop or Click to Upload Chest X-ray Image</div>
+                <input type="file" id="file" name="file" accept="image/*" required />
+            </div>
+            <button type="submit">Predict</button>
+        </form>
+        {% if prediction %}
+            <div class="result">
+                <h2>The given chest X-ray has {{ prediction[0] }} with {{ "%.2f"|format(prediction[1] * 100) }}% confidence</h2>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file');
+        const form = document.getElementById('upload-form');
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                updateUploadText(files[0].name);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                updateUploadText(e.target.files[0].name);
+            }
+        });
+
+        function updateUploadText(filename) {
+            document.querySelector('.upload-text').textContent = `Selected: ${filename}`;
+        }
+
+        form.addEventListener('submit', () => {
+            document.querySelector('.upload-text').textContent = 'Processing...';
+        });
+    </script>
+</body>
+</html>
