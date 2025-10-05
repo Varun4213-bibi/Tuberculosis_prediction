@@ -53,4 +53,7 @@ python app.py
 Then open your browser and go to `http://localhost:5000`.
 
 
+also uploded screen shots of my apps interface and a sample prediction for one of the tuberculosis chest xray
+
+
 
